@@ -8,6 +8,7 @@ static const uint16_t datareg = 0x03D5; // Address on I/O bus
 
 static const int linelen   = 80;
 static const int lines     = 24;
+static const int vga_end   = ((lines+1) * linelen);
 
 static int x = 0;
 static int y = 0;
@@ -27,53 +28,103 @@ setcursor (int x, int y) {
    outb (datareg, posn &  0xff);
 }
 
-//
-//   Clear the screen and move cursor to position 0,0
-//
 void
 vgainit ( ) {
    uint16_t * screenp = videoram;
 
-   //
-   //   The following just shows how you can output three characters
-   //
-   *screenp++ = 'A' | FOREGROUND(WHITE) | BACKGROUND(BLUE);
-   *screenp++ = 'C' | FOREGROUND(WHITE) | BACKGROUND(BLUE);
-   *screenp++ = 'S' | FOREGROUND(WHITE) | BACKGROUND(BLUE);
+   // Clearing the screen
+   for(int x = 0; x < linelen; x++) {
+      for(int y = 0; y < lines+1; y++) {
+         *screenp++ = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+      }
+   }
 
-   //
-   //   Clear the screen
-   //
-
+   // Setting the cursor position
    x = 0; y = 0;
    setcursor(x, y);
 }
 
-//void
-//putchar (char c) {
-   //
-   //   Store character value (with colour information) at memory location
-   //   of current x,y screen position and update x and y ready to move
-   //   the cursor.
-   //
-   //   Remember that you'll need to handle reaching the end of lines and
-   //   the bottom of the screen. Don't forget that, if you plan on having
-   //   a status line you need to ensure you consider this when you're
-   //   calculating the limit of the display area.
-   //
-//   setcursor (x, y);
-//}
+
+//   Store character value (with colour information) at memory location
+//   of current x,y screen position and update x and y ready to move
+//   the cursor.
+void
+putchar (char c) {
+   uint16_t * screenp = videoram;
+   // if the output is longer than the length of the screen,
+   // reset the cursor position to the start of the next line.
+   if (x > 80) {
+      y++;
+      x=0;
+   }
+
+   // Handing the backspace
+   if (c == '\r') {
+      if (x > 0) {
+         x--;
+      } else {
+         x = linelen;
+         y--;
+      }
+      *(screenp+((y)*linelen+x)) = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+      setcursor(x, y);
+      return;
+   }
+
+   // If a new character is printed,
+   // reset the cursor position to the start of the next line.
+   // Otherwise, print the character.
+   if (c == '\n') {
+      y++;
+      x=0;
+   } else {
+      *(screenp+(y*linelen+x)) = c | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+      x++;
+   }
+
+   // If the last line is reached, scroll
+   if (y == lines) {
+      for (int posx = 0; posx < linelen; posx++) {    // Goes through each character,
+         for (int posy = 1; posy < lines; posy++) {   // and sets it's position to the line above.
+            *(screenp+((posy-1)*linelen+posx)) = *(screenp+((posy)*linelen+posx));
+         }
+      }
+
+      // once all the lines are shifted up, the current line is cleared
+      y--;
+      for (int posx = 0; posx < linelen; posx++)
+         *(screenp+(y*linelen+posx)) = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+   }
+
+   // After each new character, update the position of the cursor.
+   setcursor (x, y);
+}
 
 void
 status ( char * str ) {
+   uint16_t * screenp = videoram;
+   // Varables to store the old values of the cursor
+   // so that they can later be restored.
+   int resx = x;
+   int resy = y;
 
-   if (!str) return;
+   // Setting the cursor to override the last line.
+   x = 0;
+   y = lines;
 
-   //
-   //   Display string in status line. This should be a simpler version
-   //   of what you have for putchar as it'll simply be overwriting what's
-   //   there, so no scrolling.
-   //
-   //   Use different colours for the status line so 
-   //
+   setcursor(x, y);
+
+   // Resetting the status bar to all red.
+   for (int i = vga_end-linelen; i < vga_end; i++)
+      *(screenp+i) = ' ' | FOREGROUND(WHITE) | BACKGROUND(RED);
+
+   // Calling putchar for each char in the string
+   int pos = vga_end-linelen;
+   while (*(str+x) != '\0')
+      *(screenp+pos++) = *(str+x++) | FOREGROUND(WHITE) | BACKGROUND(RED);
+
+   // Resetting the position of the cursor to the original position.
+   x = resx;
+   y = resy;
+   setcursor(x, y);
 }

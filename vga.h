@@ -17,3 +17,5 @@
 
 #define BACKGROUND(C) ((C) << 12)
 #define FOREGROUND(C) ((C) <<  8)
+
+void putchar (char c);

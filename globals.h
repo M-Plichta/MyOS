@@ -23,12 +23,18 @@ typedef long long int64_t;
 //	=================== PUBLIC FUNCTIONS ===================
 //
 
+// globals.c
+void memset( uint8_t * , uint8_t, uint32_t );
+
 // kernel.c
 void kmain    ( void *, unsigned int );
 void abort    ( void );
 
 // io.c
 void     outb    ( uint16_t, uint8_t  );
+void     koutb   ( uint16_t, uint8_t  );        // Testing
+uint8_t  kinb    ( uint16_t );                  // Testing
+uint16_t kinw    ( uint16_t );                  // Testing
 
 // multiboot.c
 void getbootinfo (void *, unsigned int );
