@@ -31,10 +31,9 @@ void kmain    ( void *, unsigned int );
 void abort    ( void );
 
 // io.c
-void     outb    ( uint16_t, uint8_t  );
-void     koutb   ( uint16_t, uint8_t  );        // Testing
-uint8_t  kinb    ( uint16_t );                  // Testing
-uint16_t kinw    ( uint16_t );                  // Testing
+void    outb    ( uint16_t, uint8_t  );
+uint8_t inb     ( uint16_t );
+void    io_wait ( );
 
 // multiboot.c
 void getbootinfo (void *, unsigned int );

@@ -51,8 +51,6 @@
                      LIMIT       | SEG_DATA_RDWR
 
 // This structure contains the value of one GDT entry.
-// We use the attribute 'packed' to tell GCC not to change
-// any of the alignment in the structure.
 struct gdt_entry_struct
 {
    uint16_t limit_low;           // The lower 16 bits of the limit.
@@ -64,6 +62,8 @@ struct gdt_entry_struct
 } __attribute__((packed));
 typedef struct gdt_entry_struct gdt_entry_t;
 
+// Special pointer used to point to the GDT.
+// This is what will be later loaded using lgdt
 struct gdt_ptr_struct
 {
    uint16_t limit;               // The upper 16 bits of all selector limits.
@@ -79,8 +79,6 @@ typedef struct gdt_ptr_struct gdt_ptr_t;
  * Following section is used to setting up and filling the IDT.
  * Each define constant represents a section of the Gate Descriptor.
  */
-
-
 #define GATE_PRES(x)    ((x) << 7)        // Present bit
 #define GATE_DPL(x)   (((x) & 0x3) << 6)  // CPU Privilate level
 #define GATE_ZERO       ((0) << 4)        // Always 0
@@ -94,7 +92,7 @@ typedef struct gdt_ptr_struct gdt_ptr_t;
 
 #define IDT_INT32_PL0 GATE_PRES(1) | GATE_DPL(0) | GATE_ZERO | GATE_TYPE_IN32
 
-// A struct describing an interrupt gate.
+// A struct contains the value of on IDT entry.
 struct idt_entry_struct
 {
    uint16_t base_lo;             // The lower 16 bits of the address to jump to when this interrupt fires.
@@ -114,6 +112,8 @@ struct idt_ptr_struct
 } __attribute__((packed));
 typedef struct idt_ptr_struct idt_ptr_t;
 
+// The interrupt handler is found in isr.c
+// Stubs for the 32 CPU-dedicated interrupts.
 extern void isr0 ();
 extern void isr1 ();
 extern void isr2 ();
@@ -146,3 +146,44 @@ extern void isr28();
 extern void isr29();
 extern void isr30();
 extern void isr31();
+
+// Stubs for the 15 8259 PIC IQRs 
+extern void irq0 ();
+extern void irq1 ();
+extern void irq2 ();
+extern void irq3 ();
+extern void irq4 ();
+extern void irq5 ();
+extern void irq6 ();
+extern void irq7 ();
+extern void irq8 ();
+extern void irq9 ();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
+
+// Programmable Interrupt Controller Constants:
+
+#define PIC1         0x20
+#define PIC2         0xA0
+#define PIC1_COMMAND PIC1        // Master PIC command port
+#define PIC1_DATA   (PIC1 + 1)   // Master PIC data port
+#define PIC2_COMMAND PIC2        // Slave  PIC command port
+#define PIC2_DATA   (PIC2 + 1)   // Slave  PIC data port
+
+
+// Initialization Command Words
+#define ICW1_ICW4       0x01
+#define ICW1_SINGLE     0x02  // Single (Cascade) mode
+#define ICW1_INTERVAL4  0x04  // Call address interval 4
+#define ICW1_LEVEL      0x08  // Level triggered mode
+#define ICW1_INIT       0x10  // Initialization
+
+#define ICW4_8086       0x01  // 8086 mode
+#define ICW4_AUTO       0x02  // Auto EOI
+#define ICW4_BUF_SLAVE  0x08  // Buffered mode - Slave
+#define ICW4_BUF_MASTER 0x0C  // Buffered mode - Master
+#define ICW4_SFNM       0x10  // Special fully nested

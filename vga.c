@@ -29,7 +29,7 @@ setcursor (int x, int y) {
 }
 
 void
-vgainit ( ) {
+clear() {
    uint16_t * screenp = videoram;
 
    // Clearing the screen
@@ -38,7 +38,11 @@ vgainit ( ) {
          *screenp++ = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
       }
    }
+}
 
+void
+vgainit ( ) {
+   clear();
    // Setting the cursor position
    x = 0; y = 0;
    setcursor(x, y);
@@ -75,15 +79,14 @@ putchar (char c) {
    // reset the cursor position to the start of the next line.
    // Otherwise, print the character.
    if (c == '\n') {
-      y++;
-      x=0;
+      y++; x=0;
    } else {
       *(screenp+(y*linelen+x)) = c | FOREGROUND(WHITE) | BACKGROUND(BLACK);
       x++;
    }
 
    // If the last line is reached, scroll
-   if (y == lines) {
+   if (y == lines - 1) {
       for (int posx = 0; posx < linelen; posx++) {    // Goes through each character,
          for (int posy = 1; posy < lines; posy++) {   // and sets it's position to the line above.
             *(screenp+((posy-1)*linelen+posx)) = *(screenp+((posy)*linelen+posx));

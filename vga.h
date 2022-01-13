@@ -19,3 +19,4 @@
 #define FOREGROUND(C) ((C) <<  8)
 
 void putchar (char c);
+void clear   ( void );
