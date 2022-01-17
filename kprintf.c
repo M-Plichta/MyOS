@@ -102,6 +102,14 @@ void kprintf(char* format, ...) {
 
 				if (CURRENT_CHAR == 'c')
 					putchar(va_arg(ap, int));
+
+				if (CURRENT_CHAR == 's') {
+					char * string_to_print = va_arg(ap, char *);
+					int index = 0;
+					while(*(string_to_print + index) != '\0')
+						putchar(*(string_to_print + index++));
+					break;
+				}
 				
 				if (CURRENT_CHAR == 'd') {
 					outstr(_itoa(intString, va_arg(ap, int), 10), paddingSize, paddingChar);

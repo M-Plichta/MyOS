@@ -28,11 +28,11 @@ kmain( void* mbd, unsigned int magic ) {
    // asm volatile ("int $0x3");
    // asm volatile ("int $0x4");
 
-   asm volatile("sti");
-   init_keyboard();
+   // asm volatile("sti");
+   // init_keyboard();
    // init_timer(50);
 
-   int counter = 0;
+   // int counter = 0;
    while(1) {
       // wait();
       // kprintf("\nCOUNTER%d\n", counter++);

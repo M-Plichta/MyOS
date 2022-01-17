@@ -4,6 +4,21 @@
 #define BREAK(); asm volatile ( "xchg %bx, %bx;" ); /* Bochs magic break code */
 #define NULL 0
 
+// Error macro
+#define ERROR(err_message)                                 \
+    do {                                                   \
+        kprintf("ERROR at %s:%d, function %s():\n    %s",__FILE__, __LINE__, __FUNCTION__, err_message); \
+        abort();                                           \
+    } while (0)
+
+// Assert macro
+#define ASSERT(x)                           \
+    do {                                    \
+        if (!(x)) {                         \
+            ERROR("Assertion failed: " #x); \
+        }                                   \
+    } while (0)
+
 //
 //	======================== TYPES ========================
 //
