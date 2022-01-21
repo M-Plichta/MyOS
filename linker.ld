@@ -39,6 +39,7 @@ SECTIONS
         *(.bss)
         *(.gnu.linkonce.b*)
         ebss = .;
+        end = .;
     }
 
     kernel_end = .;
