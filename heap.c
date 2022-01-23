@@ -1,28 +1,28 @@
 #include "heap.h"
 
 extern uint32_t end;
-uint32_t free_address = &end;
+uint32_t endKernel = &end;
 
-/**
- * @brief Simple, pre-paging kmalloc function.
- * 
- * @param s Size of memory chunck
- * @param a if a == 1, chuck is page aligned
- * @param p physical address
- * @return uint32_t 
- */
-uint32_t kmalloc(uint32_t size, uint8_t align, uint32_t * physical) {
-    if (align == 1 && (free_address & 0xFFFFF000)) {
-        free_address &= 0xFFFFF000;
-        free_address += 0x1000;
+uint32_t kmalloc( uint32_t size, int align ) {
+    if (align == 1 && (endKernel & 0x00000FFF)) {
+        endKernel &= 0xFFFFF000;
+        endKernel += 0x1000;
+    }
+    uint32_t temp = endKernel;
+    endKernel += size;
+    return temp;
+}
+
+uint32_t kmalloc_phys( uint32_t size, int align, uint32_t *phys) {
+    if (align == 1 && (endKernel & 0x00000FFF)) {
+        endKernel &= 0xFFFFF000;
+        endKernel += 0x1000;
     }
 
-    if (physical) { // If physical != 0
-        // The physical address will be stored
-        *physical = free_address;
-    }
+    if (phys)
+        *phys = endKernel;
 
-    uint32_t temp = free_address;
-    free_address += size;
+    uint32_t temp = endKernel;
+    endKernel += size;
     return temp;
 }

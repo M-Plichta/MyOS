@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "multiboot.h"
 #include "descriptor_tables.h"
+#include "heap.h"
 
 static int deleteLater = 0;
 
@@ -22,23 +23,20 @@ kmain( void* mbd, unsigned int magic ) {
    vgainit  ( );
 
    status ("MyOS");
-
    setup_interrupts();
 
-   // asm volatile ("int $0x3");
-   // asm volatile ("int $0x4");
-
-   // asm volatile("sti");
-   // init_keyboard();
-   // init_timer(50);
-
-   // int counter = 0;
-   while(1) {
-      // wait();
-      // kprintf("\nCOUNTER%d\n", counter++);
-   } // Stops the main thread from terminating
+   asm volatile("sti");
+   init_keyboard();
+   // init_timer(50);   // IRQ 0 tiemr interrupt
    
    // getbootinfo (mbd, magic);
-
    // abort( );
+
+   /* Avail. mem: 0-0x9fx00 + 0x100000-0x7ee0000 */
+
+   // Page Directory
+  
+   // init_test();
+
+   while(1) {  } // Stops the main thread from terminating
 }

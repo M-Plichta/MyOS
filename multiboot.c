@@ -20,7 +20,7 @@ getbootinfo( void* mbd, unsigned int magic ) {
    bootinfo = (struct multiboot_info *)  mbd;
 
    if (bootinfo->flags & MBTINFO_MEMORY) {
-      kprintf ("Memory: %ud - %udKB\n",
+      kprintf ("Memory: %d - %dKB\n",
          bootinfo->mem_lower, bootinfo->mem_upper);
    }
  
@@ -33,13 +33,13 @@ getbootinfo( void* mbd, unsigned int magic ) {
       mmap_end = (struct memorymap *) (bootinfo->mmap_addr+bootinfo->mmap_len);
 
       while (mmap < mmap_end) {
-         kprintf ("Memory: %08ux,%08uxh, Length: %08ux,%08uxh %s\n",
+         kprintf ("Memory: %08x,%08xh, Length: %08x,%08xh %s\n",
             mmap->base_addrh, mmap->base_addrl,
             mmap->lengthh,    mmap->lengthl,
             (mmap->type == 1) ? "Avail." : "Resvd.");
 
          mmap = (struct memorymap *)
-                   (mmap->size + sizeof(mmap->size) + (uint32_t)mmap);
+            (mmap->size + sizeof(mmap->size) + (uint32_t)mmap);
       }
    }
  

@@ -5,10 +5,10 @@
 #define NULL 0
 
 // Error macro
-#define ERROR(err_message)                                 \
-    do {                                                   \
+#define ERROR(err_message) \
+    do {                   \
         kprintf("ERROR at %s:%d, function %s():\n    %s",__FILE__, __LINE__, __FUNCTION__, err_message); \
-        abort();                                           \
+        abort();           \
     } while (0)
 
 // Assert macro

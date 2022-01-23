@@ -26,9 +26,6 @@ typedef struct  page_directory
 } page_directory_t;
 
 void init_paging();
-void switch_pd(page_directory_t * new_pd);
-page_t *get_page(uint32_t address, int make, page_directory_t *dir);
-
-void page_fault(registers_t regs);
+void init_test();
 
 #endif
