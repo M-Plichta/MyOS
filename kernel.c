@@ -35,7 +35,8 @@ kmain( void* mbd, unsigned int magic ) {
    /* Avail. mem: 0-0x9fx00 + 0x100000-0x7ee0000 */
 
    // Page Directory
-  
+   uint32_t test = 0b11111111111111111111111111111111;
+   kprintf("kprintf = %032b\n", test);
    // init_test();
 
    while(1) {  } // Stops the main thread from terminating

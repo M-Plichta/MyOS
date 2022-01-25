@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include "globals.h"
 #include "vga.h"
 
 #define ABS(N) ((N<0) ? (-N) : (N))
@@ -27,12 +28,12 @@ static char* _itoa(char* str, long value, int base)
 	if (base < 2 || base > 16)
 		return str;
  
-	int n = ABS(value);
+	long n = ABS(value);
 	int pos = 0;
 
 	// While there are digits left, calculate the string output and append
 	while (n) {
-		int r = n % base;
+		int r = n % base;		// TODO: This of a better solution for the bug where n is negative (Can happen with large binary values)
 		str[pos++] = (r > 9) ? 'a' + (r-10) : '0' + r; 
 		n = n / base;
 	}
@@ -74,14 +75,14 @@ void kprintf(char* format, ...) {
 	va_start(ap, format);
 
 	int pos = 0;
-	int numSpecial = 0;
 	while (CURRENT_CHAR != '\0') {
+		int numSpecial = 0;
 		int  paddingSize = 0;			// Initialize padding size
 		char paddingChar = ' ';			// Initialize padding character
 		if (CURRENT_CHAR == '%') {
 
 			while(1) {
-				char intString[11];
+				char intString[100];
 				pos++;
 
 				// % will return a '%' character
@@ -112,17 +113,17 @@ void kprintf(char* format, ...) {
 				}
 				
 				if (CURRENT_CHAR == 'd') {
-					outstr(_itoa(intString, va_arg(ap, int), 10), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, long long), 10), paddingSize, paddingChar);
 					break;
 				}
 
 				if (CURRENT_CHAR == 'x') {
-					outstr(_itoa(intString, va_arg(ap, int), 16), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, long long), 16), paddingSize, paddingChar);
 					break;
 				}
 
 				if (CURRENT_CHAR == 'b') {
-					outstr(_itoa(intString, va_arg(ap, int), 2), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, long long), 2), paddingSize, paddingChar);
 					break;
 				}
 
