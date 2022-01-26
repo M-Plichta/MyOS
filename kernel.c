@@ -1,7 +1,7 @@
 #include "globals.h"
 #include "multiboot.h"
 #include "descriptor_tables.h"
-#include "heap.h"
+#include "timer.h"
 
 static int deleteLater = 0;
 
@@ -25,22 +25,28 @@ kmain( void* mbd, unsigned int magic ) {
    status ("MyOS");
    setup_interrupts();
 
-   // asm volatile("sti");
    // init_keyboard();
-   // init_timer(50);   // IRQ 0 tiemr interrupt
-   
+
+   start_timer( 500 );   // IRQ 0 timer interrupt
+
+   wait();
+
+   stop_timer();
+
+   kprintf("Time passed = %d\n", get_timer());
+
    // getbootinfo (mbd, magic);
    // abort( );
 
    /* Avail. mem: 0-0x9fx00 + 0x100000-0x7ee0000 */
 
    // Page Directory
-   init_test();
+   // init_test();
 
-   kprintf("Paging activated!\n");
+   // kprintf("Paging activated!\n");
 
-   uint32_t *ptr = (uint32_t *) 0xA0000000;
-   uint32_t do_page_fault = *ptr;
+   // uint32_t *ptr = (uint32_t *) 0xA0000000;
+   // uint32_t do_page_fault = *ptr;
 
    while(1) {  } // Stops the main thread from terminating
 }

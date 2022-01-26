@@ -109,7 +109,7 @@ void init_test() {
         i += 0x1000;
     }
 
-    register_interrupt_handler(14, page_fault);
+    register_interrupt_handler(14, &page_fault);
     switch_page_directory(kernelDir);
 }
 

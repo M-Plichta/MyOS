@@ -153,6 +153,7 @@ init_idt() {
    create_idt_descriptor(47, (uint32_t)irq15, 0x08, IDT_INT32_PL0);
 
    idt_flush((uint32_t)&idt_ptr);
+   asm volatile("sti");
 }
 
 void
