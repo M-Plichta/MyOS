@@ -16,7 +16,7 @@ char* reverse(char *str, int i, int j)
 	return str;
 }
  
-static char* _itoa(char* str, long value, int base)
+static char* _itoa(char* str, unsigned long value, int base)
 {
 	// Check for valid input
 	if (value == 0) {
@@ -28,12 +28,12 @@ static char* _itoa(char* str, long value, int base)
 	if (base < 2 || base > 16)
 		return str;
  
-	long n = ABS(value);
+	unsigned long n = ABS(value);
 	int pos = 0;
 
 	// While there are digits left, calculate the string output and append
 	while (n) {
-		int r = n % base;		// TODO: This of a better solution for the bug where n is negative (Can happen with large binary values)
+		int r = ABS(n % base);		// TODO: This of a better solution for the bug where n is negative (Can happen with large binary values)
 		str[pos++] = (r > 9) ? 'a' + (r-10) : '0' + r; 
 		n = n / base;
 	}
@@ -113,17 +113,17 @@ void kprintf(char* format, ...) {
 				}
 				
 				if (CURRENT_CHAR == 'd') {
-					outstr(_itoa(intString, va_arg(ap, long long), 10), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, unsigned long long), 10), paddingSize, paddingChar);
 					break;
 				}
 
 				if (CURRENT_CHAR == 'x') {
-					outstr(_itoa(intString, va_arg(ap, long long), 16), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, unsigned long long), 16), paddingSize, paddingChar);
 					break;
 				}
 
 				if (CURRENT_CHAR == 'b') {
-					outstr(_itoa(intString, va_arg(ap, long long), 2), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, unsigned long long), 2), paddingSize, paddingChar);
 					break;
 				}
 

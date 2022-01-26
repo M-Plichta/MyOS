@@ -25,8 +25,8 @@ kmain( void* mbd, unsigned int magic ) {
    status ("MyOS");
    setup_interrupts();
 
-   asm volatile("sti");
-   init_keyboard();
+   // asm volatile("sti");
+   // init_keyboard();
    // init_timer(50);   // IRQ 0 tiemr interrupt
    
    // getbootinfo (mbd, magic);
@@ -35,9 +35,12 @@ kmain( void* mbd, unsigned int magic ) {
    /* Avail. mem: 0-0x9fx00 + 0x100000-0x7ee0000 */
 
    // Page Directory
-   uint32_t test = 0b11111111111111111111111111111111;
-   kprintf("kprintf = %032b\n", test);
-   // init_test();
+   init_test();
+
+   kprintf("Paging activated!\n");
+
+   uint32_t *ptr = (uint32_t *) 0xA0000000;
+   uint32_t do_page_fault = *ptr;
 
    while(1) {  } // Stops the main thread from terminating
 }
