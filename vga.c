@@ -28,6 +28,7 @@ setcursor (int x, int y) {
    outb (datareg, posn &  0xff);
 }
 
+// Clears the screen.
 void
 clear( void ) {
    uint16_t * screenp = videoram;
@@ -44,6 +45,7 @@ clear( void ) {
    setcursor(x, y);
 }
 
+// Initializes the screen.
 void
 vgainit ( ) {
    clear();

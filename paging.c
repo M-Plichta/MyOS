@@ -32,9 +32,9 @@ static uint32_t test_frame( uint32_t addr ) {
     return (frame_bitmap[idx] & (1 << ADDR_TO_OFFSET(addr)));
 }
 
+// Finds the first free frame
 uint32_t first_frame() {
     for (uint32_t i = 0; i < 0x80; i++) {
-        // ASSERT(frame_bitmap[i] != 0xFFFFFFFF);
         if (frame_bitmap[i] != 0xFFFFFFFF) {
             for (uint32_t j = 0; j < 32; j++) {
                 int toTest = 0x1 << j;
@@ -47,6 +47,7 @@ uint32_t first_frame() {
     }
 }
 
+// Callback function when a page_fault occurs
 void page_fault(registers_t regs) {
     // A page fault has occurred.
     // The faulting address is stored in the CR2 register.
@@ -70,6 +71,8 @@ void page_fault(registers_t regs) {
     abort();
 }
 
+// Returns a page if it already exists.
+// Otherwise, create a new one with the given parameters.
 page_t *get_page( uint32_t addr, page_directory_t *dir ) {
     addr /= 0x1000;
     int32_t table_idx = addr / 1024;
@@ -87,6 +90,7 @@ page_t *get_page( uint32_t addr, page_directory_t *dir ) {
     return &dir->tables[table_idx]->pages[addr%1024];
 }
 
+// Initializes and enables paging
 void init_paging() {
     uint32_t  mem_end_page = 0x1000000; // Assume we have 16MB
     nframes = mem_end_page / 0x1000;    // Stores the max number of pages
@@ -150,6 +154,7 @@ void free_frame( page_t *page ) {
     }
 }
 
+// Loads page table and enables paging
 void switch_page_directory( page_directory_t *dir ) {
     currentDir = dir;
 

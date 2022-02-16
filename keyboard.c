@@ -31,6 +31,7 @@ static char scanToAscii[128] =
 // The first bit is used to signal is Shift is being pressed.
 static uint8_t flags = 0;
 
+// Converts from scancode to ascii
 char keyboard_to_ascii(uint32_t key) {
    return *(scanToAscii + ((flags & 0x1)*64) + key);
 }

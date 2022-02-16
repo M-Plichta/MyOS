@@ -4,10 +4,12 @@
 
 #define ABS(N) ((N<0) ? (-N) : (N))
 
+// Swaps two values
 void swap(char *x, char *y) {
 	char t = *x; *x = *y; *y = t;
 }
- 
+
+// Reverses the order of the string produced in the _itoa function
 char* reverse(char *str, int i, int j)
 {
 	while (i < j)
@@ -48,6 +50,7 @@ static char* _itoa(char* str, long value, int base)
 	return reverse(str, 0, pos - 1);
 }
 
+// Calculates the length of a string
 int strlen (char* str) {
 	int pos = 0;
 	while(*(str+pos) != '\0') pos++;
@@ -55,6 +58,7 @@ int strlen (char* str) {
 	return pos;
 }
 
+// Outputs a string with the correct padding
 static void outstr (char* str, int width, char pad) {
 	int paddingLength = width - strlen(str);
 
@@ -66,6 +70,7 @@ static void outstr (char* str, int width, char pad) {
 	while (*(str+(pos)) != '\0') putchar(*(str+pos++));
 }
 
+// Prints formatted strings with variables.
 void kprintf(char* format, ...) {
 
 	#define CURRENT_CHAR *(format+pos)
@@ -91,9 +96,11 @@ void kprintf(char* format, ...) {
 					break;
 				}
 
+				// Handles the case where the padding character is a 0
 				if (CURRENT_CHAR == '0')
 					paddingChar = '0';	
 				
+				// Handles multiple padding characters (up to 99).
 				if (CURRENT_CHAR >= '1' && CURRENT_CHAR <= '9') {
 					if (paddingSize != 0) {
 						paddingSize *= 10;
@@ -101,9 +108,11 @@ void kprintf(char* format, ...) {
 					paddingSize += CURRENT_CHAR - 48;
 				}
 
+				// Handles variables of type char
 				if (CURRENT_CHAR == 'c')
 					putchar(va_arg(ap, int));
 
+				// Handles variables of type string (char *)
 				if (CURRENT_CHAR == 's') {
 					char * string_to_print = va_arg(ap, char *);
 					int index = 0;
@@ -112,27 +121,31 @@ void kprintf(char* format, ...) {
 					break;
 				}
 				
+				// Handles variables of integer types up to long long int, of base 10 (Decimal)
 				if (CURRENT_CHAR == 'd') {
 					outstr(_itoa(intString, va_arg(ap, long long), 10), paddingSize, paddingChar);
 					break;
 				}
 
+				// Handles variables of integer types up to long long int, of base 16 (Hexadecimal)
 				if (CURRENT_CHAR == 'x') {
 					outstr(_itoa(intString, va_arg(ap, long long), 16), paddingSize, paddingChar);
 					break;
 				}
 
+				// Handles variables of integer types up to long long int, of base 2  (Binary)
 				if (CURRENT_CHAR == 'b') {
 					outstr(_itoa(intString, va_arg(ap, long long), 2), paddingSize, paddingChar);
 					break;
 				}
 
-				if (CURRENT_CHAR == 'd' || CURRENT_CHAR == 'x' || CURRENT_CHAR == 'b') {	// Doesn't work
+				// Default padding parameters
+				if (CURRENT_CHAR == 'd' || CURRENT_CHAR == 'x' || CURRENT_CHAR == 'b') {
 					paddingSize = 0;
 					paddingChar = ' ';
 				}
-				
 	
+				// Invalid string when the '%' character was the last character.
 				if (CURRENT_CHAR == '\0')
 					break;
 			}
