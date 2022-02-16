@@ -29,7 +29,7 @@ typedef unsigned long long uint64_t;
 
 typedef unsigned long      size_t;
 
-//typedef char      int8_t;
+typedef char      int8_t;
 typedef short     int16_t;
 typedef long      int32_t;
 typedef long long int64_t;
@@ -57,6 +57,7 @@ void getbootinfo (void *, unsigned int );
 char * itoa   ( int    );
 int  strlen   ( char * );
 void kprintf  ( char *, ... );
+void clear    ( void );
 
 // vga.c
 void putchar  ( char   );

@@ -29,23 +29,24 @@ setcursor (int x, int y) {
 }
 
 void
-clear() {
+clear( void ) {
    uint16_t * screenp = videoram;
 
    // Clearing the screen
    for(int x = 0; x < linelen; x++) {
-      for(int y = 0; y < lines+1; y++) {
+      for(int y = 0; y < lines; y++) {
          *screenp++ = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
       }
    }
+
+   // Setting the cursor position
+   x = 0; y = 0;
+   setcursor(x, y);
 }
 
 void
 vgainit ( ) {
    clear();
-   // Setting the cursor position
-   x = 0; y = 0;
-   setcursor(x, y);
 }
 
 
@@ -61,6 +62,10 @@ putchar (char c) {
       y++;
       x=0;
    }
+
+   // Special case character for printing nothing (Used in keyboard driver)
+   if (c == '\e')
+      return;
 
    // Handing the backspace
    if (c == '\r') {

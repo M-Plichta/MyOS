@@ -16,7 +16,7 @@ char* reverse(char *str, int i, int j)
 	return str;
 }
  
-static char* _itoa(char* str, unsigned long value, int base)
+static char* _itoa(char* str, long value, int base)
 {
 	// Check for valid input
 	if (value == 0) {
@@ -48,7 +48,7 @@ static char* _itoa(char* str, unsigned long value, int base)
 	return reverse(str, 0, pos - 1);
 }
 
-int _strlen (char* str) {
+int strlen (char* str) {
 	int pos = 0;
 	while(*(str+pos) != '\0') pos++;
 
@@ -56,7 +56,7 @@ int _strlen (char* str) {
 }
 
 static void outstr (char* str, int width, char pad) {
-	int paddingLength = width - _strlen(str);
+	int paddingLength = width - strlen(str);
 
 	// Print the padding (if any)
 	while (paddingLength-- > 0)  putchar(pad);
@@ -113,17 +113,17 @@ void kprintf(char* format, ...) {
 				}
 				
 				if (CURRENT_CHAR == 'd') {
-					outstr(_itoa(intString, va_arg(ap, unsigned long long), 10), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, long long), 10), paddingSize, paddingChar);
 					break;
 				}
 
 				if (CURRENT_CHAR == 'x') {
-					outstr(_itoa(intString, va_arg(ap, unsigned long long), 16), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, long long), 16), paddingSize, paddingChar);
 					break;
 				}
 
 				if (CURRENT_CHAR == 'b') {
-					outstr(_itoa(intString, va_arg(ap, unsigned long long), 2), paddingSize, paddingChar);
+					outstr(_itoa(intString, va_arg(ap, long long), 2), paddingSize, paddingChar);
 					break;
 				}
 

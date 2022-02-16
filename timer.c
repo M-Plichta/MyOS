@@ -1,19 +1,19 @@
 #include "timer.h"
 #include "isr.h"
-// #include "isr.c"
 
 int INITIALIZED = 0;
 int counter = 0;
 
+// Callback function for when the IRQ0 is fired
 void timer_callback( registers_t regs ) {
     counter++;
-    kprintf("Counter == %d\n", counter);
 }
 
+// Starts timer
 void start_timer ( int frequency ) {
     ASSERT( frequency != 0 ); // Making sure we don't divide be zero
 
-    // Register the callback function for the Programmable Interrupt Timer
+    // Register the callback function for the Programmable Interval Timer
     register_interrupt_handler(IRQ0, &timer_callback);
 
     // PIT runs at roughly 1.193182 MHz
@@ -23,29 +23,18 @@ void start_timer ( int frequency ) {
     _set_time_freq ( divisor ); // Setting timer freq
 }
 
+// Stops the timer by setting the function callback to NULL
 void stop_timer  (  ) {
     register_interrupt_handler(IRQ0, NULL);
 }
 
+// Used to set the frequency of the PIT
 void _set_time_freq( int divisor ) {
     outb(0x40, (uint8_t) divisor & 0xFF);
     outb(0x40, (uint8_t) ((divisor&0xFF00) >> 8));
 }
 
+// Returns current count value.
 int get_timer() {
     return counter;
 }
-
-// void start_timer( int frequency ) {
-//     ASSERT(  )
-// }
-
-// void set_pit_count(unsigned count) {
-// 	// Disable interrupts
-// 	asm ("cli\n");
- 
-// 	// Set low byte
-// 	outb(0x40,count&0xFF);		// Low byte
-// 	outb(0x40,(count&0xFF00)>>8);	// High byte
-// 	return;
-// }

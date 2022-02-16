@@ -1,9 +1,6 @@
 #include "heap.h"
 #include "paging.h"
 
-// #define ADDR_TO_INDEX(a) ((a - endKernel) / 0x1000)
-// #define INDEX_TO_ADDR(a) ((a * 0x1000) + endKernel)
-
 #define ADDR_TO_INDEX(a)  (a/32)
 #define ADDR_TO_OFFSET(a) (a%32)
 
@@ -90,7 +87,7 @@ page_t *get_page( uint32_t addr, page_directory_t *dir ) {
     return &dir->tables[table_idx]->pages[addr%1024];
 }
 
-void init_test() {
+void init_paging() {
     uint32_t  mem_end_page = 0x1000000; // Assume we have 16MB
     nframes = mem_end_page / 0x1000;    // Stores the max number of pages
     
@@ -111,6 +108,10 @@ void init_test() {
 
     register_interrupt_handler(14, &page_fault);
     switch_page_directory(kernelDir);
+
+    // Allows you to print the bitmap:
+    // for (int i = 0; i < 10; i++)
+    //     kprintf("Bitmap == %x\n", frame_bitmap[i]);
 }
 
 /**

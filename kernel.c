@@ -22,29 +22,29 @@ void
 kmain( void* mbd, unsigned int magic ) {
    vgainit  ( );
 
+   kprintf("MyOS> ");
+
    status ("MyOS");
    setup_interrupts();
 
-   // init_keyboard();
+   init_keyboard();
+   // init_paging();
 
-   start_timer( 500 );   // IRQ 0 timer interrupt
+   // start_timer( 6000 );   // IRQ 0 timer interrupt
 
-   wait();
 
-   stop_timer();
+   // stop_timer();
 
-   kprintf("Time passed = %d\n", get_timer());
+   // kprintf("Time passed = %d\n", get_timer());
 
    // getbootinfo (mbd, magic);
    // abort( );
 
    /* Avail. mem: 0-0x9fx00 + 0x100000-0x7ee0000 */
 
-   // Page Directory
-   // init_test();
 
+   // Code for testing paging
    // kprintf("Paging activated!\n");
-
    // uint32_t *ptr = (uint32_t *) 0xA0000000;
    // uint32_t do_page_fault = *ptr;
 

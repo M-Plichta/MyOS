@@ -42,3 +42,16 @@ int memcmp(const void *src1, const void *src2, size_t n) {
     // All values to index n are the same, therefore return 0.
     return 0;
 }
+
+// Compares two strings.
+// Returns value <0 when s1 is less than s2.
+// Returns value >0 when s2 is less than s1.
+// Returns value =0 when they are equal.
+int strcmp( const char * s1, const char * s2 ) {
+    while(*s1 != '\0' && (*s1 == *s2)) {
+        s1++;
+        s2++;
+    }
+        
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}

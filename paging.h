@@ -26,6 +26,5 @@ typedef struct  page_directory
 } page_directory_t;
 
 void init_paging();
-void init_test();
 
 #endif

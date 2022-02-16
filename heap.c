@@ -1,4 +1,5 @@
 #include "heap.h"
+#include "paging.h"
 
 extern uint32_t end;
 uint32_t endKernel = &end;
