@@ -33,10 +33,11 @@ getbootinfo( void* mbd, unsigned int magic ) {
       mmap_end = (struct memorymap *) (bootinfo->mmap_addr+bootinfo->mmap_len);
 
       while (mmap < mmap_end) {
-         kprintf ("Memory: %08x,%08xh, Length: %08x,%08xh %s\n",
-            mmap->base_addrh, mmap->base_addrl,
-            mmap->lengthh,    mmap->lengthl,
-            (mmap->type == 1) ? "Avail." : "Resvd.");
+         kprintf("Memory: %08x,", mmap->base_addrh);
+         kprintf("%08xh, ", mmap->base_addrl);
+         kprintf("Length: %08x,", mmap->lengthh);
+         kprintf("%08xh ", mmap->lengthl);
+         kprintf("%s\n", (mmap->type == 1) ? "Avail." : "Resvd.");
 
          mmap = (struct memorymap *)
             (mmap->size + sizeof(mmap->size) + (uint32_t)mmap);

@@ -20,3 +20,6 @@
 
 void putchar (char c);
 void clear   ( void );
+
+void start_highlight();
+void end_highlight();

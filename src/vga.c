@@ -13,6 +13,8 @@ static const int vga_end   = ((lines+1) * linelen);
 static int x = 0;
 static int y = 0;
 
+static uint16_t colour = FOREGROUND(WHITE) | BACKGROUND(BLACK);
+
 //
 //   Move cursor to position x,y
 //   - Notice this uses isolated I/O
@@ -36,7 +38,7 @@ clear( void ) {
    // Clearing the screen
    for(int x = 0; x < linelen; x++) {
       for(int y = 0; y < lines; y++) {
-         *screenp++ = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+         *screenp++ = ' ' | colour;
       }
    }
 
@@ -49,6 +51,16 @@ clear( void ) {
 void
 vgainit ( ) {
    clear();
+}
+
+void
+start_highlight() {
+   colour = FOREGROUND(WHITE) | BACKGROUND(BLUE);
+}
+
+void
+end_highlight() {
+   colour = FOREGROUND(WHITE) | BACKGROUND(BLACK);
 }
 
 
@@ -77,7 +89,7 @@ putchar (char c) {
          x = linelen;
          y--;
       }
-      *(screenp+((y)*linelen+x)) = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+      *(screenp+((y)*linelen+x)) = ' ' | colour;
       setcursor(x, y);
       return;
    }
@@ -88,7 +100,7 @@ putchar (char c) {
    if (c == '\n') {
       y++; x=0;
    } else {
-      *(screenp+(y*linelen+x)) = c | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+      *(screenp+(y*linelen+x)) = c | colour;
       x++;
    }
 
@@ -103,7 +115,7 @@ putchar (char c) {
       // once all the lines are shifted up, the current line is cleared
       y--;
       for (int posx = 0; posx < linelen; posx++)
-         *(screenp+(y*linelen+posx)) = ' ' | FOREGROUND(WHITE) | BACKGROUND(BLACK);
+         *(screenp+(y*linelen+posx)) = ' ' | colour;
    }
 
    // After each new character, update the position of the cursor.

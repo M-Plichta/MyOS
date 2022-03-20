@@ -13,6 +13,9 @@ void timer_callback( registers_t regs ) {
 void start_timer ( int frequency ) {
     ASSERT( frequency != 0 ); // Making sure we don't divide be zero
 
+    // Reset counter:
+    counter = 0;
+
     // Register the callback function for the Programmable Interval Timer
     register_interrupt_handler(IRQ0, &timer_callback);
 

@@ -47,30 +47,6 @@ uint32_t first_frame() {
     }
 }
 
-// Callback function when a page_fault occurs
-void page_fault(registers_t regs) {
-    // A page fault has occurred.
-    // The faulting address is stored in the CR2 register.
-    uint32_t faulting_address;
-    asm volatile("mov %%cr2, %0" : "=r" (faulting_address));
-    
-    // The error code gives us details of what happened.
-    int present   = !(regs.err_code & 0x1); // Page not present
-    int rw = regs.err_code & 0x2;           // Write operation?
-    int us = regs.err_code & 0x4;           // Processor was in user-mode?
-    int reserved = regs.err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
-    int id = regs.err_code & 0x10;          // Caused by an instruction fetch?
-
-    // Output an error message.
-    kprintf("Page fault! ( ");
-    if (present) kprintf("Present ");
-    if (rw) kprintf("read-only ");
-    if (us) kprintf("user-mode ");
-    if (reserved) kprintf("reserved ");
-    kprintf(") at 0x%x\n", faulting_address);
-    abort();
-}
-
 // Returns a page if it already exists.
 // Otherwise, create a new one with the given parameters.
 page_t *get_page( uint32_t addr, page_directory_t *dir ) {
@@ -88,6 +64,24 @@ page_t *get_page( uint32_t addr, page_directory_t *dir ) {
     dir->tablesPhysical[table_idx] = temp | 0x7;
 
     return &dir->tables[table_idx]->pages[addr%1024];
+}
+
+// Callback function when a page_fault occurs
+void page_fault(registers_t regs) {
+    // A page fault has occurred.
+    // The faulting address is stored in the CR2 register.
+    uint32_t faulting_address;
+    asm volatile("mov %%cr2, %0" : "=r" (faulting_address));
+    
+    // The error code gives us details of what happened.
+    int present   = !(regs.err_code & 0x1); // Page not present
+    int rw = regs.err_code & 0x2;           // Write operation?
+    int us = regs.err_code & 0x4;           // Processor was in user-mode?
+    int reserved = regs.err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
+    int id = regs.err_code & 0x10;          // Caused by an instruction fetch?
+
+    kprintf("GoT HERE\n");
+    alloc_frame ( get_page(faulting_address, kernelDir), 0, 0 );
 }
 
 // Initializes and enables paging
